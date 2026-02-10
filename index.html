@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Couriway's 100K Seeds - Statistics Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ========== LOADING SCREEN ========== -->
+  <div id="loading-screen">
+    <div id="particles"></div>
+    <div class="loading-content">
+      <div class="ender-eye">
+        <div class="eye-outer"></div>
+        <div class="eye-inner"></div>
+        <div class="eye-glow"></div>
+      </div>
+      <h1 class="loading-title">Couriway's 100K Seeds</h1>
+      <p id="loading-message" class="loading-message">Entering the aether...</p>
+      <div class="loading-bar-container">
+        <div class="loading-bar">
+          <div class="loading-bar-fill"></div>
+        </div>
+      </div>
+      <p class="loading-sub">Fetching run data from the API&hellip;</p>
+    </div>
+  </div>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <div id="main-content" class="hidden">
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="container">
+        <div class="header-inner">
+          <div class="header-brand">
+            <div class="brand-icon">&#9670;</div>
+            <div>
+              <h1 class="header-title">Couriway's 100K Seeds</h1>
+              <p class="header-subtitle">Minecraft Speedrun Statistics Dashboard</p>
+            </div>
+          </div>
+          <div class="header-meta">
+            <span id="last-updated" class="meta-badge">Last run: --</span>
+            <span id="data-count" class="meta-badge">-- completions</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Progress Section -->
+    <section id="progress-section" class="section">
+      <div class="container">
+        <div class="progress-card">
+          <div class="progress-header">
+            <h2>Seeds Progress</h2>
+            <div class="progress-numbers">
+              <span id="seeds-played" class="progress-current">0</span>
+              <span class="progress-separator">/</span>
+              <span class="progress-goal">100,000</span>
+            </div>
+          </div>
+          <div class="progress-bar-track">
+            <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+            <div id="progress-bar-label" class="progress-bar-label">0%</div>
+          </div>
+          <div class="progress-stats-row">
+            <div class="progress-stat">
+              <span class="progress-stat-value" id="stat-completions">--</span>
+              <span class="progress-stat-label">Completions</span>
+            </div>
+            <div class="progress-stat">
+              <span class="progress-stat-value" id="stat-completion-rate">--</span>
+              <span class="progress-stat-label">Completion Rate</span>
+            </div>
+            <div class="progress-stat">
+              <span class="progress-stat-value" id="stat-runs-per-day">--</span>
+              <span class="progress-stat-label">Avg Seeds/Day</span>
+            </div>
+            <div class="progress-stat">
+              <span class="progress-stat-value" id="stat-est-completion">--</span>
+              <span class="progress-stat-label">Est. Completion</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Metrics -->
+    <section id="key-metrics" class="section">
+      <div class="container">
+        <h2 class="section-title">Key Metrics</h2>
+        <div class="metrics-grid">
+          <div class="metric-card accent-purple">
+            <div class="metric-label">Best IGT</div>
+            <div class="metric-value" id="metric-best-igt">--</div>
+            <div class="metric-detail" id="metric-best-igt-seed">--</div>
+          </div>
+          <div class="metric-card accent-blue">
+            <div class="metric-label">Average IGT</div>
+            <div class="metric-value" id="metric-avg-igt">--</div>
+            <div class="metric-detail" id="metric-avg-igt-detail">--</div>
+          </div>
+          <div class="metric-card accent-cyan">
+            <div class="metric-label">Median IGT</div>
+            <div class="metric-value" id="metric-median-igt">--</div>
+            <div class="metric-detail" id="metric-median-igt-detail">--</div>
+          </div>
+          <div class="metric-card accent-green">
+            <div class="metric-label">Best RTA</div>
+            <div class="metric-value" id="metric-best-rta">--</div>
+            <div class="metric-detail" id="metric-best-rta-seed">--</div>
+          </div>
+          <div class="metric-card accent-orange">
+            <div class="metric-label">Total Play Time</div>
+            <div class="metric-value" id="metric-total-time">--</div>
+            <div class="metric-detail" id="metric-total-time-detail">--</div>
+          </div>
+          <div class="metric-card accent-pink">
+            <div class="metric-label">Sum of Best Splits</div>
+            <div class="metric-value" id="metric-sum-of-best">--</div>
+            <div class="metric-detail">Theoretical best</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Best Splits -->
+    <section id="best-splits" class="section">
+      <div class="container">
+        <h2 class="section-title">Best Splits</h2>
+        <div class="splits-table-container">
+          <table class="splits-table" id="splits-table">
+            <thead>
+              <tr>
+                <th>Split</th>
+                <th>Best Time</th>
+                <th>Average</th>
+                <th>Median</th>
+                <th>Run # (Best)</th>
+                <th>Seed (Best)</th>
+              </tr>
+            </thead>
+            <tbody id="splits-table-body">
+            </tbody>
+          </table>
+        </div>
+        <div class="chart-card" style="margin-top: 20px;">
+          <h3 class="chart-title">Split Times Overview</h3>
+          <canvas id="chart-splits-line"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Performance Over Time -->
+    <section id="performance-section" class="section">
+      <div class="container">
+        <h2 class="section-title">Performance Over Time</h2>
+        <p class="section-desc" id="perf-desc">IGT of completed runs</p>
+        <div class="filter-pills" id="perf-filters">
+          <button class="pill active" data-range="all" onclick="setPerformanceRange('all')">All Time</button>
+          <button class="pill" data-range="year" onclick="setPerformanceRange('year')">Last Year</button>
+          <button class="pill" data-range="month" onclick="setPerformanceRange('month')">Last Month</button>
+          <button class="pill" data-range="week" onclick="setPerformanceRange('week')">Last Week</button>
+          <button class="pill" data-range="day" onclick="setPerformanceRange('day')">Last Day</button>
+        </div>
+        <div class="chart-card">
+          <canvas id="chart-performance"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Strategy Over Time (Stacked Bar) -->
+    <section id="scatter-section" class="section">
+      <div class="container">
+        <h2 class="section-title">Strategy Over Time</h2>
+        <p class="section-desc">Completions bucketed per 200 seeds, stacked by strategy</p>
+        <div class="scatter-controls">
+          <label class="scatter-label" for="scatter-color-by">Stack by:</label>
+          <select id="scatter-color-by" class="scatter-select" onchange="updateScatter()">
+            <option value="bastion_type">Bastion Type</option>
+            <option value="enter_type">Enter Type</option>
+            <option value="iron_source">Iron Source</option>
+            <option value="end_fight_type">End Fight Type</option>
+            <option value="gold_source">Gold Source</option>
+            <option value="spawn_biome">Spawn Biome</option>
+          </select>
+        </div>
+        <div class="chart-card">
+          <canvas id="chart-scatter"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- IGT Distribution -->
+    <section id="distribution-section" class="section">
+      <div class="container">
+        <h2 class="section-title">IGT Distribution</h2>
+        <p class="section-desc">How fast are the completions?</p>
+        <div class="chart-card">
+          <canvas id="chart-distribution"></canvas>
+        </div>
+        <div class="pace-cards" id="pace-cards"></div>
+      </div>
+    </section>
+
+    <!-- Strategy Charts -->
+    <section id="strategy-section" class="section">
+      <div class="container">
+        <h2 class="section-title">Strategy Breakdown</h2>
+        <div class="strategy-grid">
+          <div class="chart-card">
+            <h3 class="chart-title">Bastion Type</h3>
+            <div class="doughnut-container">
+              <canvas id="chart-bastion"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title">Nether Enter Type</h3>
+            <div class="doughnut-container">
+              <canvas id="chart-enter"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title">Iron Source</h3>
+            <div class="doughnut-container">
+              <canvas id="chart-iron"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title">End Fight Type</h3>
+            <div class="doughnut-container">
+              <canvas id="chart-end-fight"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Spawn Biomes -->
+    <section id="biome-section" class="section">
+      <div class="container">
+        <h2 class="section-title">Spawn Biomes</h2>
+        <div class="chart-card">
+          <canvas id="chart-biomes"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Combat & Food -->
+    <section id="combat-food-section" class="section">
+      <div class="container">
+        <div class="two-col-grid">
+          <div>
+            <h2 class="section-title">Mob Kills</h2>
+            <div class="chart-card">
+              <canvas id="chart-kills"></canvas>
+            </div>
+          </div>
+          <div>
+            <h2 class="section-title">Food Consumed</h2>
+            <div class="chart-card">
+              <canvas id="chart-food"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Travel Stats -->
+    <section id="travel-section" class="section">
+      <div class="container">
+        <h2 class="section-title">Travel Distances</h2>
+        <p class="section-desc">Average distance per run by travel method (blocks)</p>
+        <div class="chart-card">
+          <canvas id="chart-travel"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seed Map Explorer -->
+    <section id="seed-map-section" class="section">
+      <div class="container">
+        <h2 class="section-title">Seed Map Explorer</h2>
+        <p class="section-desc">Click a seed to preview its map on Chunkbase</p>
+        <div class="seed-explorer">
+          <div class="seed-grid" id="seed-grid"></div>
+          <div class="seed-preview-container" id="seed-preview-container" style="display:none;">
+            <div class="seed-preview-header">
+              <h3 id="seed-preview-title">Seed Preview</h3>
+              <div class="seed-preview-actions">
+                <button id="seed-copy-btn" class="btn btn-sm" onclick="copySeed()">Copy Seed</button>
+                <a id="seed-chunkbase-link" href="#" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Open in Chunkbase</a>
+                <button class="btn btn-sm" onclick="closeSeedPreview()">Close</button>
+              </div>
+            </div>
+            <div class="seed-preview-stats" id="seed-preview-stats"></div>
+            <div class="seed-iframe-container">
+              <iframe id="seed-iframe" src="" frameborder="0" loading="lazy"></iframe>
+              <div class="seed-iframe-fallback" id="seed-iframe-fallback">
+                <p>If the map doesn't load, Chunkbase may block iframe embedding.</p>
+                <a id="seed-fallback-link" href="#" target="_blank" rel="noopener" class="btn btn-primary">View on Chunkbase &rarr;</a>
+              </div>
+            </div>
+          </div>
+          <div class="seed-pagination" id="seed-pagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Runs -->
+    <section id="recent-runs-section" class="section">
+      <div class="container">
+        <h2 class="section-title">All Completions</h2>
+        <div class="runs-table-container">
+          <table class="runs-table" id="runs-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="run_id" data-type="number">Run # <span class="sort-arrow">&#x25BC;</span></th>
+                <th class="sortable" data-sort="date" data-type="date">Date <span class="sort-arrow"></span></th>
+                <th class="sortable" data-sort="igt" data-type="time">IGT <span class="sort-arrow"></span></th>
+                <th class="sortable" data-sort="rta" data-type="time">RTA <span class="sort-arrow"></span></th>
+                <th>Seed</th>
+                <th class="sortable" data-sort="bastion_type" data-type="string">Bastion <span class="sort-arrow"></span></th>
+                <th class="sortable" data-sort="iron_source" data-type="string">Iron <span class="sort-arrow"></span></th>
+                <th class="sortable" data-sort="enter_type" data-type="string">Enter <span class="sort-arrow"></span></th>
+                <th class="sortable" data-sort="end_fight_type" data-type="string">End Fight <span class="sort-arrow"></span></th>
+                <th class="sortable" data-sort="spawn_biome" data-type="string">Biome <span class="sort-arrow"></span></th>
+              </tr>
+            </thead>
+            <tbody id="runs-table-body">
+            </tbody>
+          </table>
+        </div>
+        <div class="table-pagination" id="runs-pagination"></div>
+      </div>
+    </section>
+
+    <!-- Run Inspector -->
+    <section id="run-inspector-section" class="section">
+      <div class="container">
+        <h2 class="section-title">Run Inspector</h2>
+        <p class="section-desc">Select a run to see its full breakdown vs. averages, medians, and bests</p>
+        <div class="inspector-search">
+          <div class="scatter-controls" style="margin-bottom:0;">
+            <label class="scatter-label" for="inspector-input">Run #</label>
+            <input type="text" id="inspector-input" class="scatter-select" style="width:140px;" placeholder="e.g. 8,540" oninput="searchInspectorRun()">
+          </div>
+          <div class="scatter-controls" style="margin-bottom:0;">
+            <label class="scatter-label" for="inspector-select">or pick recent:</label>
+            <select id="inspector-select" class="scatter-select" style="width:220px;" onchange="selectInspectorRun()">
+              <option value="">-- Select a run --</option>
+            </select>
+          </div>
+        </div>
+        <div id="inspector-content" style="display:none;">
+          <div class="inspector-header" id="inspector-header"></div>
+          <div class="inspector-grid">
+            <div class="inspector-panel">
+              <h3 class="chart-title">Split Comparison</h3>
+              <div class="splits-table-container">
+                <table class="splits-table" id="inspector-splits-table">
+                  <thead>
+                    <tr>
+                      <th>Split</th>
+                      <th>This Run</th>
+                      <th>Best</th>
+                      <th>Average</th>
+                      <th>Median</th>
+                      <th>vs Best</th>
+                      <th>vs Avg</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inspector-splits-body"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="inspector-panel">
+              <h3 class="chart-title">Run Details</h3>
+              <div id="inspector-details" class="inspector-details"></div>
+            </div>
+          </div>
+          <div class="inspector-grid" style="margin-top:20px;">
+            <div class="inspector-panel">
+              <h3 class="chart-title">Combat & Resources</h3>
+              <div id="inspector-combat" class="inspector-kv-grid"></div>
+            </div>
+            <div class="inspector-panel">
+              <h3 class="chart-title">Food & Travel</h3>
+              <div id="inspector-food-travel" class="inspector-kv-grid"></div>
+            </div>
+          </div>
+          <div id="inspector-notes" class="inspector-notes" style="display:none;"></div>
+          <div class="chart-card" style="margin-top:20px;">
+            <h3 class="chart-title">Split Times: This Run vs Average</h3>
+            <canvas id="chart-inspector"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <p>Data sourced from <a href="https://couriway-seeds.datastudy.nl" target="_blank" rel="noopener">couriway-seeds.datastudy.nl</a> &middot; <a href="https://docs.google.com/spreadsheets/d/1Tyw9fwdZgsHJoHzlE-0LPSEDOduRkZwL2UUNA-_4Xo4/" target="_blank" rel="noopener">Original Spreadsheet</a></p>
+        <p class="footer-sub">Built for Couriway's 100K Seeds Challenge</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

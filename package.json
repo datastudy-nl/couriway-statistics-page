@@ -1,0 +1,11 @@
+{
+  "name": "couriway-statistics-page",
+  "version": "1.0.0",
+  "description": "Statistics dashboard for Couriway's 100K Seeds Minecraft Speedrun Challenge",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "start": "python -m http.server 3000"
+  },
+  "keywords": ["minecraft", "speedrun", "statistics", "couriway"],
+  "license": "MIT"
+}
