@@ -2,7 +2,8 @@
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](#)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./package.json)
-[![Static Site](https://img.shields.io/badge/build-static%20site-lightgrey.svg)](#)
+[![Static Site](https://img.shields.io/badge/type-static%20site-lightgrey.svg)](#)
+[![JavaScript](https://img.shields.io/badge/language-JavaScript-yellow.svg)](#)
 
 A lightweight, static statistics dashboard for Couriway's **100K Seeds Minecraft Speedrun Challenge**. This project is designed to be served as a simple static website and developed locally with a minimal setup.
 
@@ -18,11 +19,8 @@ A lightweight, static statistics dashboard for Couriway's **100K Seeds Minecraft
 
 ## Prerequisites
 
-- One of the following:
-  - **Python 3** (recommended for the included dev server), or
-  - Any static file server of your choice
-- Optional:
-  - **Node.js + npm** (only needed if you want to use the npm scripts)
+- **Python 3** (recommended for the included dev server), or any static file server of your choice
+- Optional: **Node.js + npm** (only needed if you want to use the npm scripts)
 
 ## Installation
 
@@ -31,7 +29,7 @@ A lightweight, static statistics dashboard for Couriway's **100K Seeds Minecraft
    - `cd couriway-statistics-page`
 
 2. (Optional) Install npm dependencies  
-   This project does not require dependencies by default, but you can still use npm scripts:
+   This project is a static site and typically does not require dependencies, but you can still use the npm scripts:
    - `npm install`
 
 ## Usage
@@ -55,7 +53,7 @@ If you prefer to skip npm entirely:
 Then open:
 - http://localhost:3000
 
-### Deploy
+## Deploy
 
 Because this is a static site, deployment is as simple as serving these files:
 
@@ -63,7 +61,11 @@ Because this is a static site, deployment is as simple as serving these files:
 - `styles.css`
 - `app.js`
 
-If using GitHub Pages, ensure the repository is configured to publish from the correct branch/folder. The presence of `CNAME` indicates it may be set up for a custom domain.
+### GitHub Pages
+
+If you deploy with GitHub Pages, configure the repository to publish from the correct branch/folder (commonly the repository root for a simple static site).
+
+The presence of `CNAME` indicates this repo may be set up for a custom domain via GitHub Pages.
 
 ## Configuration
 
@@ -74,7 +76,7 @@ This project is intended to be configuration-light.
 - **Dashboard behavior / data sources:**  
   - If you need to adjust how statistics are loaded, processed, or displayed, look in `app.js` for the relevant logic.
 
-If you add environment-specific configuration, consider documenting it here and keeping secrets out of the repository (this project is static and should not require secrets).
+If you add environment-specific configuration, keep secrets out of the repository (this project is static and should not require secrets).
 
 ## Project Structure
 
@@ -83,6 +85,7 @@ If you add environment-specific configuration, consider documenting it here and 
 - `app.js` — Client-side JavaScript powering the dashboard (data loading, rendering, interactivity)
 - `package.json` — Project metadata and convenience scripts for local serving
 - `CNAME` — Custom domain setting for GitHub Pages (if applicable)
+- `CONTRIBUTING.md` — Contribution guidelines
 
 ## Contributing
 
@@ -91,4 +94,4 @@ Contributions are welcome. Please see:
 
 ## License
 
-Licensed under the **MIT License**. See the license field in `package.json` or add a dedicated `LICENSE` file if you want the full text checked into the repository.
+Licensed under the **MIT License** (see `package.json`). If you want the full text included in the repository, consider adding a dedicated `LICENSE` file.
